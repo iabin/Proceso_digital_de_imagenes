@@ -1,0 +1,59 @@
+<project name="ImageFilter" default="build" basedir=".">
+
+  <description> Archivo de ayuda, ImageFilters </description>
+
+  <property name="jar-dir" value="dist"/>
+  <property name="jar-file" value="${jar-dir}/ImageFilter.jar"/>
+  <property name="doc-dir" value="docs"/>
+  <property name="class-dir" value="build"/>
+  <property name="src-dir" value="src"/>
+  <property name="res-dir" value="resources"/>
+  <property name="main-class" value="ProjectFilters"/>
+  <property name="arguments" value=""/>
+
+  <target name="javadoc">
+    <mkdir dir="${doc-dir}"/>
+    <javadoc encoding="UTF-8"
+	     charset="UTF-8" destdir="${doc-dir}"
+	     windowtitle="Documentacion ImageFilter">
+      <fileset dir="${src-dir}"/>
+    </javadoc>
+  </target>
+
+  <target name="compile">
+    <mkdir dir="${class-dir}"/>
+    <javac srcdir="${src-dir}"
+	   destdir="${class-dir}"
+	   includeantruntime="false">
+    </javac>
+    <copy todir="${class-dir}">
+      <fileset dir="${res-dir}/hf" includes="**" />
+    </copy>
+  </target>
+
+  <target name="clean">
+    <delete dir="${class-dir}"/>
+    <delete dir="${doc-dir}"/>
+    <delete dir="${jar-dir}"/>
+  </target>
+
+  <target name="run" depends="compile">
+    <java classname="${main-class}" fork="true">
+      <classpath>
+	<pathelement path="${class-dir}"/>
+      </classpath>
+      <arg line="${arguments}"/>
+    </java>
+  </target>
+
+  <target name="jar" depends="compile">
+    <mkdir dir="${jar-dir}"/>
+    <jar destfile="${jar-file}" basedir="${class-dir}">
+       <manifest>
+	 <attribute name="Main-Class" 
+		    value="${main-class}"/>
+       </manifest>
+    </jar>
+   </target>
+   <target name="build" depends="compile, jar, javadoc"/>
+</project>
